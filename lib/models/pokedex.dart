@@ -1,12 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/pokemon.dart';
+import 'pokemon.dart';
 
-class Pokedex with ChangeNotifier {
+class Pokedex {
   String url = 'https://pokeapi.co/api/v2/pokemon/?limit=151';
 
   List<Pokemon> _pokemonList = [];
@@ -19,13 +17,18 @@ class Pokedex with ChangeNotifier {
     return _pokemonList.firstWhere((pokemon) => pokemon.id == id);
   }
 
-  void addPokemon(
-      {String id, String name, List<String> types, String imageUrl}) {
+  void addPokemon({
+    String id,
+    String name,
+    List<String> types,
+    String imageUrl,
+  }) {
     final Pokemon newPokemon = Pokemon(
       id: id,
       name: name,
       types: types,
       imageUrl: imageUrl,
+      color: getColorCode(types[0]),
     );
     _pokemonList.add(newPokemon);
   }
@@ -69,13 +72,13 @@ class Pokedex with ChangeNotifier {
           id: id,
           name: pokemonData['name'].toString(),
           types: types.map<String>((type) => type['type']['name']).toList(),
-          imageUrl:
+          imageUrl: //pokemonData['sprites']['front_default'],
               'https://assets.pokemon.com/assets/cms2/img/pokedex/full/${id.padLeft(3, '0')}.png',
         );
       }
+      url = responseBody['next'];
     } catch (error) {
       print(error);
     }
-    notifyListeners();
   }
 }

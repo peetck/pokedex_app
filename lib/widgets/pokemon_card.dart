@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../providers/pokedex.dart';
 
 class PokemonCard extends StatelessWidget {
   final String id;
@@ -9,6 +7,7 @@ class PokemonCard extends StatelessWidget {
   final List<String> types;
   final String imageUrl;
   final Function goToDetailPage;
+  final int color;
 
   PokemonCard({
     @required this.id,
@@ -16,17 +15,19 @@ class PokemonCard extends StatelessWidget {
     @required this.types,
     @required this.imageUrl,
     @required this.goToDetailPage,
+    @required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      key: ValueKey(id),
       onTap: () => goToDetailPage(context, id),
       child: Container(
         width: 180,
-        height: 150,
+        height: 160,
         decoration: BoxDecoration(
-          color: Color(Provider.of<Pokedex>(context).getColorCode(types[0])),
+          color: Color(color),
           borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
@@ -37,12 +38,16 @@ class PokemonCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    '${name[0].toUpperCase() + name.substring(1)}',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  Container(
+                    width: 160,
+                    child: Text(
+                      '${name[0].toUpperCase() + name.substring(1)}',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   SizedBox(height: 5),
@@ -67,7 +72,7 @@ class PokemonCard extends StatelessWidget {
                             margin: EdgeInsets.only(right: 10),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.transparent),
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.black.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
@@ -82,13 +87,16 @@ class PokemonCard extends StatelessWidget {
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(80),
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.1),
               ),
               child: Hero(
                 tag: id,
-                child: Image.network(
-                  imageUrl,
+                child: FadeInImage(
                   fit: BoxFit.cover,
+                  placeholder: AssetImage('assets/images/pokeball.png'),
+                  image: NetworkImage(
+                    imageUrl,
+                  ),
                 ),
               ),
             ),

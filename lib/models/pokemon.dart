@@ -5,11 +5,13 @@ class Pokemon {
   final String name;
   final List<String> types;
   final String imageUrl;
+  final int color;
 
   Pokemon({
     @required this.id,
     @required this.name,
     @required this.types,
     @required this.imageUrl,
+    @required this.color,
   });
 }

@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../models/pokemon.dart';
-import '../providers/pokedex.dart';
 
 class DetailScreen extends StatelessWidget {
   static const routeName = '/detail-screen';
 
   @override
   Widget build(BuildContext context) {
-    final String id = ModalRoute.of(context).settings.arguments as String;
-    final provider = Provider.of<Pokedex>(context, listen: false);
-    final Pokemon pokemon = provider.getPokemon(id);
-
-    final int color = provider.getColorCode(pokemon.types[0]);
+    final Pokemon pokemon = ModalRoute.of(context).settings.arguments as Pokemon;
 
     return Scaffold(
-      backgroundColor: Color(color),
+      backgroundColor: Color(pokemon.color),
       body: Column(
         children: <Widget>[
           Padding(
@@ -55,7 +49,7 @@ class DetailScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '#${id.padLeft(3, '0')}',
+                          '#${pokemon.id.padLeft(3, '0')}',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -90,12 +84,15 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
               Hero(
-                tag: id,
+                tag: pokemon.id,
                 child: Container(
                   width: 200,
-                  child: Image.network(
-                    pokemon.imageUrl,
+                  child: FadeInImage(
                     fit: BoxFit.cover,
+                    placeholder: AssetImage('assets/images/pokeball.png'),
+                    image: NetworkImage(
+                      pokemon.imageUrl,
+                    ),
                   ),
                 ),
               ),
