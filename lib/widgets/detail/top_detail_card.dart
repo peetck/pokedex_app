@@ -5,12 +5,14 @@ class TopDetailCard extends StatelessWidget {
   final String name;
   final List<String> types;
   final String imageUrl;
+  final Function nextAndBackHandler;
 
   TopDetailCard({
     this.id,
     this.name,
     this.types,
     this.imageUrl,
+    this.nextAndBackHandler,
   });
 
   @override
@@ -70,6 +72,12 @@ class TopDetailCard extends StatelessWidget {
         Hero(
           tag: id,
           child: Container(
+            margin: const EdgeInsets.only(bottom: 15),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(80),
+            ),
             width: 150,
             child: FadeInImage(
               fit: BoxFit.cover,

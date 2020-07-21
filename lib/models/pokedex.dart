@@ -26,6 +26,8 @@ class Pokedex {
     String height,
     String weight,
     List<String> abilities,
+    String baseExperience,
+    Map<String, String> stats,
   }) {
     final Pokemon newPokemon = Pokemon(
       id: id,
@@ -37,6 +39,8 @@ class Pokedex {
       height: height,
       weight: weight,
       species: species,
+      baseExperience: baseExperience,
+      stats: stats,
     );
     _pokemonList.add(newPokemon);
   }
@@ -76,18 +80,39 @@ class Pokedex {
         final pokemonData = json.decode(rawData.body);
         final String id = pokemonData['id'].toString();
         final List<dynamic> types = pokemonData['types'];
-        final String weight = pokemonData['weight'].toStringAsFixed(2);
-        final String height = pokemonData['height'].toStringAsFixed(2);
+        final String weight = pokemonData['weight'].toString();
+        final String height = pokemonData['height'].toString();
         final List<dynamic> rawAbilities = pokemonData['abilities'];
         final List<String> abilities = [];
-        for (int i = 0; i < rawAbilities.length; i++){
+        for (int i = 0; i < rawAbilities.length; i++) {
           final String abilityName = rawAbilities[i]['ability']['name'];
           abilities.add(abilityName);
         }
 
-        final speciesResponse = await http.get('https://pokeapi.co/api/v2/pokemon-species/$id');
-        String species = json.decode(speciesResponse.body)['genera'][7]['genus'];
+        final speciesResponse =
+            await http.get('https://pokeapi.co/api/v2/pokemon-species/$id');
+        String species =
+            json.decode(speciesResponse.body)['genera'][7]['genus'];
         species = species.replaceAll('Pokémon', '').trim();
+        final baseExperience = pokemonData['base_experience'].toString();
+        final rawStats = pokemonData['stats'];
+        final int hp = rawStats[0]['base_stat'];
+        final int attack = rawStats[1]['base_stat'];
+        final int defense = rawStats[2]['base_stat'];
+        final int spAtk = rawStats[3]['base_stat'];
+        final int spDef = rawStats[4]['base_stat'];
+        final int speed = rawStats[5]['base_stat'];
+        final int total = hp + attack + defense + spAtk + spDef + speed;
+        Map<String, String> stats = {
+          'hp': hp.toString(),
+          'attack': attack.toString(),
+          'defense': defense.toString(),
+          'spAtk': spAtk.toString(),
+          'spDef': spDef.toString(),
+          'speed': speed.toString(),
+          'total': total.toString(),
+        };
+
         addPokemon(
           id: id,
           name: pokemonData['name'].toString(),
@@ -98,6 +123,8 @@ class Pokedex {
           height: height,
           species: species,
           abilities: abilities,
+          baseExperience: baseExperience,
+          stats: stats,
         );
       }
       url = responseBody['next'];

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/pokedex.dart';
-import '../widgets/pokemon_card.dart';
+import '../widgets/overview/pokemon_card.dart';
 import '../screens/detail_screen.dart';
 import '../models/pokemon.dart';
 
@@ -57,7 +57,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 TextField(
                   decoration: InputDecoration(
                     icon: Icon(

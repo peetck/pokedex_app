@@ -28,62 +28,68 @@ class DetailScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Color(pokemon.color),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 25),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.home),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.favorite_border),
-                  onPressed: () {},
-                ),
-              ],
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.black87,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          TopDetailCard(
-            id: pokemon.id,
-            name: pokemon.name,
-            types: pokemon.types,
-            imageUrl: pokemon.imageUrl,
-          ),
-          BottomDetailCard(
-            weight: pokemon.weight,
-            height: pokemon.height,
-            species: pokemon.species,
-            abilities: pokemon.formatAbilities(),
-          ),
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                FlatButton.icon(
-                  onPressed: pokemon.id != '1'
-                      ? () => nextAndBackHandler(context, -1)
-                      : null,
-                  icon: Icon(Icons.arrow_back),
-                  label: Text('Previous'),
-                ),
-                FlatButton.icon(
-                  onPressed: pokemon.id != '151'
-                      ? () => nextAndBackHandler(context, 1)
-                      : null,
-                  icon: Icon(Icons.arrow_forward),
-                  label: Text('Forward'),
-                ),
-              ],
+            TopDetailCard(
+              id: pokemon.id,
+              name: pokemon.name,
+              types: pokemon.types,
+              imageUrl: pokemon.imageUrl,
+              nextAndBackHandler: nextAndBackHandler,
             ),
-          ),
-        ],
+            Expanded(
+              child: BottomDetailCard(
+                weight: pokemon.weight,
+                height: pokemon.height,
+                species: pokemon.species,
+                abilities: pokemon.formatAbilities(),
+                baseExperience: pokemon.baseExperience,
+                stats: pokemon.stats,
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  FlatButton.icon(
+                    onPressed: pokemon.id != '1'
+                        ? () => nextAndBackHandler(context, -1)
+                        : null,
+                    icon: Icon(Icons.arrow_back),
+                    label: Text('Previous'),
+                  ),
+                  FlatButton.icon(
+                    onPressed: pokemon.id != '151'
+                        ? () => nextAndBackHandler(context, 1)
+                        : null,
+                    icon: Icon(Icons.arrow_forward),
+                    label: Text('Forward'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

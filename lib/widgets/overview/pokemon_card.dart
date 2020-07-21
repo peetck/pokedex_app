@@ -50,14 +50,14 @@ class PokemonCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                     '#${id.padLeft(3, '0')}',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
                   Row(
                     children: types
                         .map(
@@ -68,8 +68,8 @@ class PokemonCard extends StatelessWidget {
                                 color: Colors.white,
                               ),
                             ),
-                            padding: EdgeInsets.all(5),
-                            margin: EdgeInsets.only(right: 10),
+                            padding: const EdgeInsets.all(5),
+                            margin: const EdgeInsets.only(right: 10),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.transparent),
                               color: Colors.black.withOpacity(0.2),
@@ -83,8 +83,8 @@ class PokemonCard extends StatelessWidget {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(right: 10),
-              padding: EdgeInsets.all(10),
+              margin: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(80),
                 color: Colors.black.withOpacity(0.1),
