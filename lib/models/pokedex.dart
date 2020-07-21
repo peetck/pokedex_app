@@ -22,6 +22,10 @@ class Pokedex {
     String name,
     List<String> types,
     String imageUrl,
+    String species,
+    String height,
+    String weight,
+    List<String> abilities,
   }) {
     final Pokemon newPokemon = Pokemon(
       id: id,
@@ -29,6 +33,10 @@ class Pokedex {
       types: types,
       imageUrl: imageUrl,
       color: getColorCode(types[0]),
+      abilities: abilities,
+      height: height,
+      weight: weight,
+      species: species,
     );
     _pokemonList.add(newPokemon);
   }
@@ -68,12 +76,28 @@ class Pokedex {
         final pokemonData = json.decode(rawData.body);
         final String id = pokemonData['id'].toString();
         final List<dynamic> types = pokemonData['types'];
+        final String weight = pokemonData['weight'].toStringAsFixed(2);
+        final String height = pokemonData['height'].toStringAsFixed(2);
+        final List<dynamic> rawAbilities = pokemonData['abilities'];
+        final List<String> abilities = [];
+        for (int i = 0; i < rawAbilities.length; i++){
+          final String abilityName = rawAbilities[i]['ability']['name'];
+          abilities.add(abilityName);
+        }
+
+        final speciesResponse = await http.get('https://pokeapi.co/api/v2/pokemon-species/$id');
+        String species = json.decode(speciesResponse.body)['genera'][7]['genus'];
+        species = species.replaceAll('Pokémon', '').trim();
         addPokemon(
           id: id,
           name: pokemonData['name'].toString(),
           types: types.map<String>((type) => type['type']['name']).toList(),
           imageUrl: //pokemonData['sprites']['front_default'],
               'https://assets.pokemon.com/assets/cms2/img/pokedex/full/${id.padLeft(3, '0')}.png',
+          weight: weight,
+          height: height,
+          species: species,
+          abilities: abilities,
         );
       }
       url = responseBody['next'];

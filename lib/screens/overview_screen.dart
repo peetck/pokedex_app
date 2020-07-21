@@ -33,7 +33,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void goToDetailPage(BuildContext ctx, String id) {
     Pokemon pokemon = pokedex.getPokemon(id);
-    Navigator.of(ctx).pushNamed(DetailScreen.routeName, arguments: pokemon);
+    Navigator.of(ctx).pushNamed(DetailScreen.routeName, arguments: {
+      'pokedex' : pokedex,
+      'pokemon' : pokemon,
+    });
   }
 
   @override
