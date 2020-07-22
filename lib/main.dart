@@ -32,10 +32,6 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: OverviewScreen(),
-      initialRoute: '/',
-      routes: {
-        DetailScreen.routeName: (ctx) => DetailScreen(),
-      },
     );
   }
 }

@@ -5,24 +5,35 @@ import '../models/pokemon.dart';
 import '../widgets/detail/top_detail_card.dart';
 import '../widgets/detail/bottom_detail_card.dart';
 
-class DetailScreen extends StatelessWidget {
-  static const routeName = '/detail-screen';
+class DetailScreen extends StatefulWidget {
+  final Pokedex pokedex;
+  final String id;
+
+  DetailScreen({
+    this.pokedex,
+    this.id,
+  });
+
+  @override
+  _DetailScreenState createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  Pokemon pokemon;
+  @override
+  void initState() {
+    pokemon = widget.pokedex.getPokemon(widget.id);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final data =
-        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
-
-    final Pokedex pokedex = data['pokedex'];
-    final Pokemon pokemon = data['pokemon'];
-
     void nextAndBackHandler(BuildContext ctx, int value) {
       final nextId = int.parse(pokemon.id) + value;
-      final nextPokemon = pokedex.getPokemon(nextId.toString());
-      Navigator.of(ctx)
-          .pushReplacementNamed(DetailScreen.routeName, arguments: {
-        'pokemon': nextPokemon,
-        'pokedex': pokedex,
+      final nextPokemon = widget.pokedex.getPokemon(nextId.toString());
+
+      setState(() {
+        pokemon = nextPokemon;
       });
     }
 
