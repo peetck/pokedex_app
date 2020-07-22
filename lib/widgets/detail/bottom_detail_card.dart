@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'pages/about.dart';
 import 'pages/base_stats.dart';
-import 'pages/evolution.dart';
-import 'pages/moves.dart';
 
 enum TabBarSelection {
   ABOUT,
   BASE_STATS,
-  EVOLUTION,
-  MOVES,
 }
 
 class BottomDetailCard extends StatefulWidget {
@@ -87,40 +83,6 @@ class _BottomDetailCardState extends State<BottomDetailCard> {
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      currentTab = TabBarSelection.EVOLUTION;
-                    });
-                  },
-                  child: Text(
-                    'Evolution',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: currentTab == TabBarSelection.EVOLUTION
-                          ? Colors.black
-                          : Colors.grey,
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      currentTab = TabBarSelection.MOVES;
-                    });
-                  },
-                  child: Text(
-                    'Moves',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: currentTab == TabBarSelection.MOVES
-                          ? Colors.black
-                          : Colors.grey,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 25),
@@ -132,14 +94,9 @@ class _BottomDetailCardState extends State<BottomDetailCard> {
                 abilities: widget.abilities,
                 baseExperience: widget.baseExperience,
               ),
-            if (currentTab == TabBarSelection.BASE_STATS) BaseStats(stats: widget.stats,),
-            if (currentTab == TabBarSelection.EVOLUTION)
-              Container(
-                child: CircularProgressIndicator(),
-              ),
-            if (currentTab == TabBarSelection.MOVES)
-              Container(
-                child: CircularProgressIndicator(),
+            if (currentTab == TabBarSelection.BASE_STATS)
+              BaseStats(
+                stats: widget.stats,
               ),
           ],
         ),

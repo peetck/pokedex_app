@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../models/pokedex.dart';
@@ -15,6 +17,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   var _isLoading = false;
 
+  double _loadingStatus = 0.0;
+
   @override
   void initState() {
     loadData();
@@ -25,17 +29,24 @@ class _OverviewScreenState extends State<OverviewScreen> {
     setState(() {
       _isLoading = true;
     });
+    final timer = Timer.periodic(Duration(milliseconds: 1), (_) {
+      print(pokedex.pokemonList.length / 151);
+      setState(() {
+        _loadingStatus = pokedex.pokemonList.length / 151;
+      });
+    });
     await pokedex.fetchPokemonAPI();
     setState(() {
       _isLoading = false;
     });
+    timer.cancel();
   }
 
   void goToDetailPage(BuildContext ctx, String id) {
     Pokemon pokemon = pokedex.getPokemon(id);
     Navigator.of(ctx).pushNamed(DetailScreen.routeName, arguments: {
-      'pokedex' : pokedex,
-      'pokemon' : pokemon,
+      'pokedex': pokedex,
+      'pokemon': pokemon,
     });
   }
 
@@ -51,7 +62,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  'Pokedex',
+                  'Kanto Pokédex',
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -73,9 +84,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
             child: _isLoading
                 ? Center(
                     child: CircularProgressIndicator(
+                      backgroundColor: Colors.grey,
                       valueColor: AlwaysStoppedAnimation<Color>(
                         Colors.black,
                       ),
+                      value: _loadingStatus,
                     ),
                   )
                 : Padding(

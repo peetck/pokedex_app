@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // for disable debug tag on device
-      title: 'Pokedex App',
+      title: 'Kanto Pokédex App',
       theme: ThemeData(
         inputDecorationTheme: InputDecorationTheme(
           focusedBorder: UnderlineInputBorder(
