@@ -5,8 +5,6 @@ import 'package:http/http.dart' as http;
 import 'pokemon.dart';
 
 class Pokedex {
-  String url = 'https://pokeapi.co/api/v2/pokemon/?limit=151';
-
   List<Pokemon> _pokemonList = [];
 
   List<Pokemon> get pokemonList {
@@ -15,6 +13,17 @@ class Pokedex {
 
   Pokemon getPokemon(String id) {
     return _pokemonList.firstWhere((pokemon) => pokemon.id == id);
+  }
+
+  List<Pokemon> searchPokemon(String msg) {
+    if (msg.isEmpty) {
+      return pokemonList;
+    }
+    RegExp _numeric = RegExp(r'^-?[0-9]+$');
+    if (_numeric.hasMatch(msg)) {
+      return _pokemonList.where((pokemon) => pokemon.id == msg).toList();
+    }
+    return _pokemonList.where((pokemon) => pokemon.name.contains(msg)).toList();
   }
 
   void addPokemon({
@@ -70,6 +79,7 @@ class Pokedex {
   }
 
   Future<void> fetchPokemonAPI() async {
+    final String url = 'https://pokeapi.co/api/v2/pokemon/?limit=151';
     try {
       final response = await http.get(url);
       final responseBody = json.decode(response.body);
@@ -127,7 +137,6 @@ class Pokedex {
           stats: stats,
         );
       }
-      url = responseBody['next'];
     } catch (error) {
       print(error);
     }

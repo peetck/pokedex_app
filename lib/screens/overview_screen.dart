@@ -15,6 +15,7 @@ class OverviewScreen extends StatefulWidget {
 class _OverviewScreenState extends State<OverviewScreen> {
   Pokedex pokedex = Pokedex();
 
+  List<Pokemon> _pokemonList;
   var _isLoading = false;
 
   double _loadingStatus = 0.0;
@@ -26,6 +27,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   Future<void> loadData() async {
+    print('loading.. data');
     setState(() {
       _isLoading = true;
     });
@@ -40,9 +42,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
       _isLoading = false;
     });
     timer.cancel();
+    _pokemonList = pokedex.pokemonList;
   }
 
   void goToDetailPage(BuildContext ctx, String id) {
+    FocusScope.of(ctx).unfocus();
     Navigator.of(ctx).push(
       MaterialPageRoute(
         builder: (ctx) => DetailScreen(
@@ -56,65 +60,76 @@ class _OverviewScreenState extends State<OverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, top: 60),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  'Kanto Pokédex',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                TextField(
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.search,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15, top: 60),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Kanto Pokédex',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
                     ),
-                    hintText: 'Search by name',
                   ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: _isLoading
-                ? Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.grey,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.black,
+                  const SizedBox(height: 15),
+                  TextField(
+                    enabled: !_isLoading,
+                    decoration: InputDecoration(
+                      icon: Icon(
+                        Icons.search,
                       ),
-                      value: _loadingStatus,
+                      hintText: 'Search by id or name',
                     ),
-                  )
-                : Padding(
-                    padding: EdgeInsets.all(15),
-                    child: ListView.builder(
-                      itemCount: pokedex.pokemonList.length,
-                      itemBuilder: (ctx, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: PokemonCard(
-                            id: pokedex.pokemonList[index].id,
-                            name: pokedex.pokemonList[index].name,
-                            types: pokedex.pokemonList[index].types,
-                            imageUrl: pokedex.pokemonList[index].imageUrl,
-                            goToDetailPage: goToDetailPage,
-                            color: pokedex.pokemonList[index].color,
-                          ),
-                        );
-                      },
-                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _pokemonList = pokedex.searchPokemon(value.trim());
+                      });
+                    },
                   ),
-          ),
-        ],
+                ],
+              ),
+            ),
+            Expanded(
+              child: _isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.grey,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.black,
+                        ),
+                        value: _loadingStatus,
+                      ),
+                    )
+                  : Padding(
+                      padding: EdgeInsets.all(15),
+                      child: ListView.builder(
+                        itemCount: _pokemonList.length,
+                        itemBuilder: (ctx, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: PokemonCard(
+                              id: _pokemonList[index].id,
+                              name: _pokemonList[index].name,
+                              types: _pokemonList[index].types,
+                              imageUrl: _pokemonList[index].imageUrl,
+                              goToDetailPage: goToDetailPage,
+                              color: _pokemonList[index].color,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
