@@ -31,7 +31,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     setState(() {
       _isLoading = true;
     });
-    final timer = Timer.periodic(Duration(milliseconds: 1), (_) {
+    final timer = Timer.periodic(Duration(seconds: 1), (_) {
       print(pokedex.pokemonList.length / 151);
       setState(() {
         _loadingStatus = pokedex.pokemonList.length / 151;
