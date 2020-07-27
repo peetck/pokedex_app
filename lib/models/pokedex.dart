@@ -138,7 +138,7 @@ class Pokedex {
         );
       }
     } catch (error) {
-      print(error);
+      throw error;
     }
   }
 }

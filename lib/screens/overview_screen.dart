@@ -13,10 +13,13 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   Pokedex pokedex = Pokedex();
 
   List<Pokemon> _pokemonList;
   var _isLoading = false;
+  var _isError = false;
 
   double _loadingStatus = 0.0;
 
@@ -30,6 +33,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     print('loading.. data');
     setState(() {
       _isLoading = true;
+      _isError = false;
     });
     final timer = Timer.periodic(Duration(seconds: 1), (_) {
       print(pokedex.pokemonList.length / 151);
@@ -37,7 +41,20 @@ class _OverviewScreenState extends State<OverviewScreen> {
         _loadingStatus = pokedex.pokemonList.length / 151;
       });
     });
-    await pokedex.fetchPokemonAPI();
+    try {
+      await pokedex.fetchPokemonAPI();
+    } catch (error) {
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text('Some error occurred.'),
+        ),
+      );
+      setState(() {
+        _isError = true;
+      });
+      timer.cancel();
+      return;
+    }
     setState(() {
       _isLoading = false;
     });
@@ -60,6 +77,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -100,13 +118,25 @@ class _OverviewScreenState extends State<OverviewScreen> {
             Expanded(
               child: _isLoading
                   ? Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.grey,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.black,
-                        ),
-                        value: _loadingStatus,
-                      ),
+                      child: _isError
+                          ? RaisedButton(
+                              onPressed: loadData,
+                              color: Colors.black.withOpacity(0.05),
+                              child: Text(
+                                'Try again',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          : CircularProgressIndicator(
+                              backgroundColor: Colors.grey,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.black,
+                              ),
+                              value: _loadingStatus,
+                            ),
                     )
                   : Padding(
                       padding: EdgeInsets.all(15),
